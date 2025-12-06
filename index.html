@@ -1,375 +1,588 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Робототехника с нами и вокруг нас</title>
-  <!-- Подсветка синтаксиса -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+
+  <!-- Highlight.js -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/arduino.min.js"></script>
+
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg-main: #020617;
+      --bg-card: rgba(15, 23, 42, 0.9);
+      --accent-1: #4f46e5;
+      --accent-2: #7c3aed;
+      --accent-3: #ec4899;
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --border-soft: rgba(148, 163, 184, 0.45);
+      --radius-lg: 18px;
+      --radius-pill: 999px;
+      --shadow-strong: 0 18px 40px rgba(15, 23, 42, 0.95);
+      --transition-fast: 0.2s ease;
+      --transition-med: 0.25s ease;
+    }
+
+    html, body {
+      height: 100%;
+    }
 
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #f5f5f5;
-      color: #333;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%);
+      color: var(--text-main);
     }
 
     header {
-      background: #333;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: linear-gradient(135deg, #020617 0%, #1d4ed8 45%, #7c3aed 100%);
       color: #fff;
-      padding: 16px 24px;
-      position: relative;
-      z-index: 10;
+      padding: 14px 18px;
+      box-shadow: 0 4px 20px rgba(15, 23, 42, 0.6);
+      border-bottom: 1px solid rgba(148, 163, 184, 0.3);
     }
 
-    header h1 { margin: 0; font-size: 24px; }
+    header h1 {
+      font-size: 22px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
     .page-inner {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 24px 16px 40px;
     }
 
-    h2 { margin-top: 0; }
-
+    /* Секции-экраны */
     .fullpage {
-      width: 100vw;
-      margin-left: calc(50% - 50vw);
-      margin-right: calc(50% - 50vw);
-      min-height: 100vh;
-      display: none;
-      position: relative;
-      padding: 40px 16px 40px;
-      align-items: center;
+      position: absolute;
+      inset: 60px 0 0 0; /* ниже хедера */
+      min-height: calc(100vh - 60px);
+      padding: 36px 16px;
+      display: flex;
+
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.25s ease, visibility 0.25s ease;
     }
 
-    .fullpage.active { display: flex; }
+    .fullpage.active {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      position: relative;
+    }
 
-    /* Окно авторизации с фоном ap.jpg */
+    /* ---------- Фоны ---------- */
+
     #auth-page {
-      background-image: url('ap.jpg');
+      background-image: url("ap.jpg");
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
       color: #fff;
+      justify-content: center;
+      align-items: center;
     }
 
     #auth-page::before {
-      content: '';
+      content: "";
       position: absolute;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
+      background:
+        radial-gradient(circle at top left, rgba(79, 70, 229, 0.45), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.4), transparent 55%),
+        rgba(15, 23, 42, 0.9);
       z-index: 1;
     }
 
-    #auth-page > * { position: relative; z-index: 2; }
-    #auth-page .page-inner { width: 100%; }
+    #auth-page > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    #tabs-page {
+      background-image: url("ap1.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    #tabs-page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.96), rgba(30, 64, 175, 0.9));
+      z-index: 1;
+    }
+
+    #tabs-page > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    .tab-page {
+      background-image: url("ap4.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    .tab-page::before,
+    #admin-page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at top left, rgba(129, 140, 248, 0.32), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.24), transparent 55%),
+        rgba(15, 23, 42, 0.94);
+      z-index: 1;
+    }
+
+    .tab-page > *,
+    #admin-page > * {
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ---------- Центровка блока авторизации ---------- */
+
+    #auth-page .auth-wrapper {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
 
     .auth-card {
-      max-width: 420px;
-      margin: 0 auto;
-      background: rgba(255, 255, 255, 0.95);
-      padding: 24px 24px 28px;
-      border-radius: 10px;
-      color: #333;
+      width: 100%;
+      padding: 26px 24px 30px;
+      border-radius: var(--radius-lg);
+      background:
+        radial-gradient(circle at top left, rgba(59, 130, 246, 0.18), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.18), transparent 55%),
+        var(--bg-card);
+      box-shadow:
+        0 22px 45px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(148, 163, 184, 0.35);
+      backdrop-filter: blur(18px);
+    }
+
+    .auth-title {
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .auth-title h2 {
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .auth-title p {
+      margin-top: 6px;
+      font-size: 13px;
+      color: #cbd5f5;
     }
 
     .auth-tabs {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       margin-bottom: 16px;
+      padding: 4px;
+      border-radius: var(--radius-pill);
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid var(--border-soft);
     }
 
     .auth-tab-btn {
       flex: 1;
       padding: 10px 12px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
-      background: #f7f7f7;
+      border-radius: var(--radius-pill);
+      border: none;
+      background: transparent;
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
       text-align: center;
-      transition: all 0.2s;
-      color: #000; /* чёрный текст на кнопках Вход/Регистрация */
+      transition: all var(--transition-med);
+      color: #cbd5f5;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    .auth-tab-btn svg {
+      width: 16px;
+      height: 16px;
     }
 
     .auth-tab-btn.active {
-      background: #007bff;
-      color: #fff;
-      border-color: #007bff;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #f9fafb;
+      box-shadow: 0 12px 26px rgba(79, 70, 229, 0.7);
+      transform: translateY(-1px);
+    }
+
+    .auth-tab-btn:not(.active):hover {
+      background: rgba(30, 64, 175, 0.25);
+      transform: translateY(-1px);
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 12px;
-      margin-top: 8px;
+      gap: 14px;
+      margin-top: 4px;
     }
 
-    label { font-size: 14px; font-weight: 500; }
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field-label-main {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    label {
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .field-wrapper {
+      position: relative;
+    }
+
+    .field-icon-left {
+      position: absolute;
+      inset-block: 0;
+      left: 10px;
+      display: flex;
+      align-items: center;
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .field-icon-left svg {
+      width: 16px;
+      height: 16px;
+    }
 
     input {
-      padding: 12px 14px;
-      font-size: 15px;
-      border-radius: 6px;
-      border: 1px solid #ddd;
       width: 100%;
-      background: #fff;
+      padding: 11px 12px 11px 34px;
+      font-size: 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.96);
+      color: var(--text-main);
+      outline: none;
+      transition: all var(--transition-fast);
+    }
+
+    input::placeholder {
+      color: #6b7280;
     }
 
     input:focus {
-      outline: none;
-      border-color: #007bff;
-      box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+      border-color: #60a5fa;
+      box-shadow:
+        0 0 0 1px rgba(37, 99, 235, 0.7),
+        0 0 0 8px rgba(37, 99, 235, 0.18);
     }
 
-    button {
-      margin-top: 12px;
+    .password-note {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .btn-primary {
+      margin-top: 8px;
       padding: 12px 20px;
-      font-size: 16px;
-      font-weight: 500;
+      font-size: 15px;
+      font-weight: 600;
+      border-radius: var(--radius-pill);
       border: none;
-      border-radius: 6px;
-      background: #007bff;
-      color: #fff;
+      background: linear-gradient(135deg, var(--accent-1), var(--accent-2));
+      color: #f9fafb;
       cursor: pointer;
-      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      box-shadow:
+        0 16px 35px rgba(37, 99, 235, 0.8),
+        0 0 0 1px rgba(191, 219, 254, 0.3);
+      transition: all var(--transition-med);
     }
 
-    button:hover { background: #0064cc; }
-
-    .btn-secondary { background: #6c757d; }
-    .btn-secondary:hover { background: #5a6268; }
-
-    .note, .admin-warning {
-      font-size: 13px;
-      margin-top: 12px;
-      line-height: 1.4;
+    .btn-primary svg {
+      width: 16px;
+      height: 16px;
     }
 
-    .note { color: #eee; text-align: center; }
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.08);
+      box-shadow:
+        0 22px 42px rgba(37, 99, 235, 0.95),
+        0 0 0 1px rgba(219, 234, 254, 0.8);
+    }
 
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow:
+        0 12px 26px rgba(30, 64, 175, 0.85),
+        0 0 0 1px rgba(191, 219, 254, 0.5);
+    }
+
+    .note {
+      font-size: 12px;
+      margin-top: 14px;
+      line-height: 1.5;
+      text-align: center;
+      color: #cbd5f5;
+      opacity: 0.9;
+    }
+
+    /* предупреждение под карточкой */
     .admin-warning {
-      color: #d44;
-      background: rgba(255, 235, 235, 0.8);
-      padding: 12px;
-      border-radius: 6px;
-      border-left: 4px solid #d44;
-      max-width: 420px;
-      margin: 12px auto 0;
+      width: 100%;
+      font-size: 12px;
+      line-height: 1.4;
+      color: #fecaca;
+      background: rgba(127, 29, 29, 0.95);
+      padding: 10px 12px;
+      border-radius: 12px;
+      border-left: 4px solid #f87171;
+      box-shadow: 0 10px 22px rgba(127, 29, 29, 0.8);
       text-align: left;
     }
 
-    /* Главное меню вкладок с фоном ap1.jpg */
-    #tabs-page {
-      background-image: url('ap1.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: #333;
+    .btn-secondary {
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-soft);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--text-main);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all var(--transition-fast);
     }
 
-    #tabs-page::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 1;
+    .btn-secondary svg {
+      width: 14px;
+      height: 14px;
     }
 
-    #tabs-page > * { position: relative; z-index: 2; }
-    #tabs-page .page-inner { width: 100%; }
+    .btn-secondary:hover {
+      background: rgba(31, 41, 55, 0.98);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.9);
+      transform: translateY(-0.5px);
+    }
+
+    /* ---------- Главное меню вкладок ---------- */
 
     .tabs-container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 32px;
-      border-radius: 12px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      background:
+        radial-gradient(circle at top left, rgba(129, 140, 248, 0.14), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.14), transparent 55%),
+        var(--bg-card);
+      padding: 26px 24px 22px;
+      border-radius: var(--radius-lg);
+      box-shadow:
+        var(--shadow-strong),
+        0 0 0 1px rgba(148, 163, 184, 0.55);
+      backdrop-filter: blur(16px);
+    }
+
+    .tabs-header h2 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .tabs-header p {
+      font-size: 13px;
+      color: var(--text-muted);
     }
 
     .tabs-buttons {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 24px;
+      gap: 10px;
+      margin: 18px 0 16px;
     }
 
     .tab-btn {
       flex: 1 1 30%;
-      padding: 16px 20px;
-      border: 1px solid rgba(0,0,0,0.1);
-      background: #ffffff;
+      padding: 12px 16px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148, 163, 184, 0.55);
+      background: rgba(15, 23, 42, 0.95);
       cursor: pointer;
-      border-radius: 8px;
-      text-align: center;
-      font-size: 15px;
+      font-size: 13px;
       font-weight: 600;
-      transition: all 0.3s;
-      color: #333;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-align: center;
+      color: var(--text-main);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
       white-space: nowrap;
+      transition: all var(--transition-med);
+    }
+
+    .tab-btn svg {
+      width: 16px;
+      height: 16px;
     }
 
     .tab-btn:hover {
-      background: #f3f4ff;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      background: radial-gradient(circle at top, rgba(59, 130, 246, 0.26), rgba(30, 64, 175, 0.55));
+      transform: translateY(-1px);
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.95);
     }
 
     .tab-btn.active {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: #fff;
+      background: linear-gradient(135deg, var(--accent-1) 0%, var(--accent-2) 50%, var(--accent-3) 100%);
+      color: #f9fafb;
       border-color: transparent;
-      box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+      box-shadow:
+        0 18px 40px rgba(129, 140, 248, 0.9),
+        0 0 0 1px rgba(219, 234, 254, 0.85);
+      transform: translateY(-1px);
     }
 
-    .tab-page {
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      color: #fff;
+    .user-bar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-top: 10px;
     }
 
-    #tab1-page { background-image: url('ap4.jpg'); }
-    #tab2-page { background-image: url('ap4.jpg'); }
-    #tab3-page, #tab4-page, #tab5-page, #tab6-page { background-image: url('ap4.jpg'); }
-
-    #tab1-page::before,
-    #tab2-page::before,
-    #tab3-page::before,
-    #tab4-page::before,
-    #tab5-page::before,
-    #tab6-page::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.55);
-      z-index: 1;
+    .user-bar span {
+      font-size: 13px;
+      color: #cbd5f5;
     }
 
-    #tab1-page > *,
-    #tab2-page > *,
-    #tab3-page > *,
-    #tab4-page > *,
-    #tab5-page > *,
-    #tab6-page > * {
-      position: relative;
-      z-index: 2;
-    }
+    /* ---------- Контент вкладок ---------- */
 
-    .tab-page .page-inner { width: 100%; }
+    .tab-page .page-inner {
+      width: 100%;
+    }
 
     .tab-page-content {
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 12px;
-      padding: 32px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-      color: #fff;
-      backdrop-filter: blur(10px);
+      background:
+        radial-gradient(circle at top left, rgba(129, 140, 248, 0.16), transparent 55%),
+        radial-gradient(circle at bottom right, rgba(236, 72, 153, 0.14), transparent 55%),
+        var(--bg-card);
+      border-radius: var(--radius-lg);
+      padding: 28px 24px 24px;
+      box-shadow:
+        var(--shadow-strong),
+        0 0 0 1px rgba(148, 163, 184, 0.55);
+      backdrop-filter: blur(16px);
+      color: #f9fafb;
     }
 
     .tab-page-content h2 {
-      color: #fff;
-      margin-bottom: 24px;
-      margin-top: 32px;
-      font-size: 32px;
-      font-weight: 700;
-      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-      border-bottom: 3px solid rgba(102, 126, 234, 0.8);
-      padding-bottom: 12px;
-    }
-
-    .tab-page-content h2:first-child {
-      margin-top: 0;
-    }
-
-    .tab-page-content h3 {
-      color: #fff;
-      margin-top: 28px;
-      margin-bottom: 16px;
       font-size: 24px;
-      font-weight: 600;
-      text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-      border-left: 4px solid rgba(102, 126, 234, 0.8);
-      padding-left: 16px;
-    }
-
-    .tab-page-content h4 {
-      color: #fff;
-      margin-top: 24px;
-      margin-bottom: 12px;
-      font-size: 20px;
-      font-weight: 600;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+      font-weight: 700;
+      margin-top: 6px;
+      margin-bottom: 18px;
+      text-shadow: 2px 2px 4px rgba(15, 23, 42, 0.7);
+      border-bottom: 3px solid rgba(129, 140, 248, 0.9);
+      padding-bottom: 10px;
     }
 
     .tab-page-content p {
-      line-height: 1.8;
-      margin-bottom: 16px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+      margin-bottom: 12px;
+      line-height: 1.7;
+      text-shadow: 1px 1px 2px rgba(15, 23, 42, 0.9);
     }
 
-    /* Стили для блоков кода */
+    .tab-page-content a {
+      color: #93c5fd;
+      text-decoration: none;
+      border-bottom: 1px dashed rgba(147, 197, 253, 0.7);
+      transition: color var(--transition-fast), border-color var(--transition-fast);
+    }
+
+    .tab-page-content a:hover {
+      color: #bfdbfe;
+      border-color: #bfdbfe;
+    }
+
     .tab-page-content pre {
-      background: #1e1e1e;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px 0;
+      background: #020617;
+      border-radius: 10px;
+      padding: 16px;
+      margin: 16px 0;
       overflow-x: auto;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-      border: 1px solid rgba(102, 126, 234, 0.3);
+      border: 1px solid rgba(129, 140, 248, 0.6);
+      box-shadow: 0 8px 24px rgba(15, 23, 42, 0.95);
     }
 
     .tab-page-content code {
-      font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-      font-size: 14px;
-      line-height: 1.6;
+      font-family: "Consolas", "Monaco", "Courier New", monospace;
+      font-size: 13px;
     }
 
-    .tab-page-content pre code {
-      display: block;
-      color: #abb2bf;
-      background: transparent;
-    }
-
-    /* Стили для inline кода */
-    .tab-page-content p code,
-    .tab-page-content li code {
-      background: rgba(102, 126, 234, 0.2);
-      padding: 2px 6px;
-      border-radius: 4px;
-      font-size: 0.9em;
-      color: #a5b4fc;
-    }
-
-    /* Стили для списков */
-    .tab-page-content ul,
-    .tab-page-content ol {
-      margin: 16px 0;
-      padding-left: 24px;
-      line-height: 1.8;
-    }
-
-    .tab-page-content li {
-      margin-bottom: 8px;
-      text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-    }
-
-    /* Стили для выделения важных блоков */
     .code-block-label {
       display: inline-block;
-      background: rgba(102, 126, 234, 0.3);
-      padding: 4px 12px;
-      border-radius: 4px 4px 0 0;
-      font-size: 12px;
+      background: rgba(129, 140, 248, 0.42);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 11px;
       font-weight: 600;
-      margin-bottom: -1px;
-      color: #fff;
+      margin-bottom: 4px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
     }
 
     table {
@@ -377,22 +590,72 @@
       border-collapse: collapse;
       margin-top: 16px;
       font-size: 14px;
-      background: #fff;
-      color: #333;
+      background: rgba(15, 23, 42, 0.98);
+      color: var(--text-main);
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.95);
     }
 
-    th, td {
-      border: 1px solid #ddd;
-      padding: 12px 16px;
+    th,
+    td {
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      padding: 10px 12px;
       text-align: left;
+      white-space: nowrap;
     }
 
-    th { background: #f8f9fa; font-weight: 600; }
-    tr:nth-child(even) { background: #f8f9fa; }
+    th {
+      background: linear-gradient(135deg, #1d4ed8, #7c3aed);
+      font-weight: 600;
+      font-size: 12px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
 
-    @media (max-width: 600px) {
-      .tabs-container, .tab-page-content { padding: 20px; }
-      .tab-btn { flex: 1 1 45%; }
+    tr:nth-child(even) {
+      background: rgba(15, 23, 42, 0.96);
+    }
+
+    tr:nth-child(odd) {
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    /* ---------- Адаптив ---------- */
+
+    @media (max-width: 640px) {
+      header h1 {
+        font-size: 18px;
+      }
+
+      .page-inner {
+        padding-inline: 12px;
+      }
+
+      .auth-card,
+      .tabs-container,
+      .tab-page-content {
+        padding: 22px 18px 22px;
+      }
+
+      .tabs-buttons {
+        gap: 8px;
+      }
+
+      .tab-btn {
+        flex: 1 1 48%;
+        font-size: 12px;
+        padding-inline: 10px;
+      }
+
+      th,
+      td {
+        font-size: 12px;
+      }
+
+      .fullpage {
+        inset: 60px 0 0 0;
+      }
     }
   </style>
 </head>
@@ -401,80 +664,227 @@
     <h1>Робототехника с нами и вокруг нас</h1>
   </header>
 
-  <!-- Окно авторизации с двумя вкладками -->
+  <!-- АВТОРИЗАЦИЯ -->
   <section id="auth-page" class="fullpage active">
-    <div class="page-inner">
+    <div class="auth-wrapper">
       <div class="auth-card">
-        <div class="auth-tabs">
-          <button class="auth-tab-btn active" data-auth-tab="login">Вход</button>
-          <button class="auth-tab-btn" data-auth-tab="register">Регистрация</button>
+        <div class="auth-title">
+          <h2>Вход в кабинет</h2>
+          <p>Создайте аккаунт или войдите, чтобы открыть материалы по C++ и Arduino.</p>
         </div>
 
-        <!-- Форма входа -->
+        <div class="auth-tabs">
+          <button class="auth-tab-btn active" data-auth-tab="login">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1c0-2-3-4-7-4Z" fill="currentColor" />
+            </svg>
+            Вход
+          </button>
+          <button class="auth-tab-btn" data-auth-tab="register">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Регистрация
+          </button>
+        </div>
+
+        <!-- Вход -->
         <form id="login-form">
-          <label for="login-username">Логин</label>
-          <input type="text" id="login-username" required>
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="login-username">Логин</label>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1c0-2-3-4-7-4Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="text" id="login-username" placeholder="Введите логин" required />
+            </div>
+          </div>
 
-          <label for="login-password">Пароль</label>
-          <input type="password" id="login-password" required>
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="login-password">Пароль</label>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M17 10h-1V7a4 4 0 0 0-8 0v3H7a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1Zm-7-3a2 2 0 1 1 4 0v3h-4Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="password" id="login-password" placeholder="Введите пароль" required />
+            </div>
+          </div>
 
-          <button type="submit">Войти</button>
+          <button type="submit" class="btn-primary">
+            <span>Войти</span>
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h9M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </form>
 
-        <!-- Форма регистрации -->
-        <form id="register-form" style="display:none;">
-          <label for="reg-username">Логин</label>
-          <input type="text" id="reg-username" required>
+        <!-- Регистрация -->
+        <form id="register-form" style="display: none">
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="reg-username">Логин</label>
+              <span class="hint">Латиница и цифры</span>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M12 12a4 4 0 1 0-4-4 4 4 0 0 0 4 4Zm0 2c-4 0-7 2-7 4v1a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-1c0-2-3-4-7-4Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="text" id="reg-username" placeholder="Придумайте логин" required />
+            </div>
+          </div>
 
-          <label for="reg-email">E‑mail</label>
-          <input type="email" id="reg-email" required>
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="reg-email">E‑mail</label>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M4 6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1.2l-8 5.3-8-5.3V6Zm0 3.75V18a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9.75l-7.4 4.9a2 2 0 0 1-2.2 0L4 9.75Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="email" id="reg-email" placeholder="Введите e‑mail" required />
+            </div>
+          </div>
 
-          <label for="reg-password">Пароль</label>
-          <input type="password" id="reg-password" required minlength="6">
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="reg-password">Пароль</label>
+              <span class="hint">Не менее 6 символов</span>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M17 10h-1V7a4 4 0 0 0-8 0v3H7a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1Zm-7-3a2 2 0 1 1 4 0v3h-4Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="password" id="reg-password" placeholder="Придумайте пароль" required minlength="6" />
+            </div>
+            <p class="password-note">Лучше использовать буквы верхнего/нижнего регистра и цифры.</p>
+          </div>
 
-          <label for="reg-password2">Повторите пароль</label>
-          <input type="password" id="reg-password2" required>
+          <div class="field-group">
+            <div class="field-label-main">
+              <label for="reg-password2">Повторите пароль</label>
+            </div>
+            <div class="field-wrapper">
+              <div class="field-icon-left">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <path d="M17 10h-1V7a4 4 0 0 0-8 0v3H7a1 1 0 0 0-1 1v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9a1 1 0 0 0-1-1Zm-7-3a2 2 0 1 1 4 0v3h-4Z" fill="currentColor" />
+                </svg>
+              </div>
+              <input type="password" id="reg-password2" placeholder="Повторите пароль" required />
+            </div>
+          </div>
 
-          <button type="submit">Зарегистрироваться</button>
+          <button type="submit" class="btn-primary">
+            <span>Зарегистрироваться</span>
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 12h9M12 5l7 7-7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
         </form>
+
+        <p class="note">Данные пользователей сохраняются только в этом браузере (localStorage) в учебных целях.</p>
       </div>
 
-      <p class="note"></p>
-      <p class="admin-warning">⚠️ Только для обучения.</p>
+      <p class="admin-warning">
+        ⚠ Сайт строго для общеобразовательной информации.
+      </p>
     </div>
   </section>
 
-  <!-- Главное меню вкладок -->
+  <!-- ГЛАВНОЕ МЕНЮ -->
   <section id="tabs-page" class="fullpage">
     <div class="page-inner">
       <div class="tabs-container">
-        <h2 style="color: #333; margin-bottom: 16px;">Добро пожаловать!</h2>
-        <p style="color: #666; margin-bottom: 24px;">Нажмите на вкладку для открытия отдельной страницы.</p>
-
-        <div class="tabs-buttons">
-          <button class="tab-btn" data-tab="tab1-page">Теория С++</button>
-          <button class="tab-btn" data-tab="tab2-page">Ардуино как и зачем</button>
-          <button class="tab-btn" data-tab="tab3-page">1 работа</button>
-          <button class="tab-btn" data-tab="tab4-page">2 работа</button>
-          <button class="tab-btn" data-tab="tab5-page">3 работа</button>
-          <button class="tab-btn" data-tab="tab6-page">4 работа</button>
-          <button class="tab-btn" data-tab="admin-page" id="admin-tab-btn">Админ</button>
+        <div class="tabs-header">
+          <h2>Добро пожаловать!</h2>
+          <p>Выберите вкладку, чтобы открыть материалы и практические работы.</p>
         </div>
 
-        <p style="color:#888;font-size:13px;">
-          Текущий пользователь: <span id="current-user-label">неизвестен</span>
-        </p>
-        <button id="logout-btn" class="btn-secondary" style="margin-top:12px;">Выйти</button>
+        <div class="tabs-buttons">
+          <button class="tab-btn" data-tab="tab1-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M5 5h14v14H5z" stroke="currentColor" stroke-width="2" />
+              <path d="M8 9h8M8 13h5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Теория C++
+          </button>
+          <button class="tab-btn" data-tab="tab2-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M7 7h10v10H7z" stroke="currentColor" stroke-width="2" />
+              <path d="M12 7v10M7 12h10" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Arduino
+          </button>
+          <button class="tab-btn" data-tab="tab3-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M6 5h12v14H6z" stroke="currentColor" stroke-width="2" />
+              <path d="M9 9h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            1 работа
+          </button>
+          <button class="tab-btn" data-tab="tab4-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M6 5h12v14H6z" stroke="currentColor" stroke-width="2" />
+              <path d="M9 9h4M9 13h6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            2 работа
+          </button>
+          <button class="tab-btn" data-tab="tab5-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M6 5h12v14H6z" stroke="currentColor" stroke-width="2" />
+              <path d="M9 9h5M9 13h3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            3 работа
+          </button>
+          <button class="tab-btn" data-tab="tab6-page">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M6 5h12v14H6z" stroke="currentColor" stroke-width="2" />
+              <path d="M9 9h2M9 13h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            4 работа
+          </button>
+          <button class="tab-btn" data-tab="admin-page" id="admin-tab-btn">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M12 2 4 6v6c0 5 3.5 9.5 8 10 4.5-.5 8-5 8-10V6Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round" />
+              <path d="M12 11a2.5 2.5 0 1 0-2.5-2.5A2.5 2.5 0 0 0 12 11Zm0 2c-2.5 0-4.5 1.5-4.5 3v1h9v-1c0-1.5-2-3-4.5-3Z" fill="currentColor" />
+            </svg>
+            Админ
+          </button>
+        </div>
+
+        <div class="user-bar">
+          <span>Текущий пользователь: <strong id="current-user-label">неизвестен</strong></span>
+          <button id="logout-btn" class="btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none">
+              <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M13 5V4a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+            </svg>
+            Выйти
+          </button>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Вкладки 1-6 -->
+  <!-- ВКЛАДКИ -->
   <section id="tab1-page" class="fullpage tab-page">
     <div class="page-inner">
       <div class="tab-page-content">
-        <h2>Теория С++ — Профиль</h2>
-        <p>Код первой программы.</p>
+        <h2>Теория C++ — первая программа</h2>
+        <p>        <p>Код первой программы.</p>
         <p>Наберите следующий код:</p>
         <div class="code-block-label">Код программы</div>
         <pre><code class="language-cpp">#include &lt;iostream&gt;
@@ -731,8 +1141,15 @@ int main()
 <p>Arduino — это электронный конструктор, который позволяет любому человеку создавать разнообразные электро-механические устройства. Ардуино состоит из программной и аппаратной части. Программная часть включает в себя среду разработки (программа для написания и отладки прошивок), множество готовых и удобных библиотек, упрощенный язык программирования. Аппаратная часть включает в себя большую линейку микроконтроллеров и готовых модулей для них. Благодаря этому, работать с Arduino очень просто!</p>
 <p>С помощью ардуино можно обучаться программированию, электротехнике и механике. Но это не просто обучающий конструктор. На его основе вы сможете сделать действительно полезные устройства.</p>
 <p>Начиная с простых мигалок, метеостанций, систем автоматизации и заканчивая системой умного дома, ЧПУ станками и беспилотными летательными аппаратами. Возможности не ограничиваются даже вашей фантазией, потому что есть огромное количество инструкций и идей для реализации.</p>
+</p>
 
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
@@ -740,7 +1157,8 @@ int main()
   <section id="tab2-page" class="fullpage tab-page">
     <div class="page-inner">
       <div class="tab-page-content">
-        <h2>Ардуино что это? — Сообщения</h2>
+        <h2>Arduino — первые шаги</h2>
+        <p>        <h2>Ардуино что это? — Сообщения</h2>
         <p>Что такое Arduino и для чего оно нужно?</p>
         <h3>Среда разработки Arduino IDE</h3>
         <p>Для написания, отладки и загрузки прошивок необходимо скачать и установить Arduino IDE. Это очень простая и удобная программа. На моем сайте я уже описывал процесс загрузки, установки и настройки среды разработки. Поэтому здесь я просто оставлю ссылки на последнюю версию программы и на статью с подробной инструкцией.</p>
@@ -821,8 +1239,14 @@ delay(500);  // задержка для того что бы значений б
 }</code></pre>
 <p>Вот так из двух простейших элементов и четырех строк кода мы сделали датчик освещенности. На базе этого устройства мы можем сделать умный светильник или ночник. Очень простое и полезное устройство.</p>
 <p>Вот мы и рассмотрели основы работы с Arduino. Теперь вы можете сделать простейшие проекты. Что бы продолжить обучение и освоить все тонкости, я советую прочитать книги по ардуино и пройти бесплатный обучающий курс. После этого вы сможете делать самые сложные проекты, которые только сможете придумать.</p>
+</p>
 
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
@@ -831,6 +1255,9 @@ delay(500);  // задержка для того что бы значений б
     <div class="page-inner">
       <div class="tab-page-content">
         <h2>Первая практическая работа</h2>
+        <p>
+          Материал:
+
         <p><p><a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%d1%81%d0%b2%d0%b5%d1%82%d0%be%d0%b4%d0%b8%d0%be%d0%b4-%d0%bf%d1%83%d0%bb%d1%8c%d1%82/#1">Управление светодиодом от ик пульта Ардуино</a>.</p>
 <p>Управление светодиодом от пульта дистанционного управления Ардуино &mdash; мини проект, на основе которого можно сделать дистанционное управление освещением в помещении&nbsp;на адресной светодиодной ленте. Рассмотрим схему сборки данного проекта, подключение светодиодов к плате, а также программу для включения и выключения светодиодов Arduino с помощью пульта ДУ.</p>
 <p>Для этого проекта потребуется:</p>
@@ -888,7 +1315,14 @@ void loop() {
 <li>нажмите кнопку на пульте дистанционного управления, вы должны увидеть код на последовательном мониторе, нажмите кнопку несколько раз, чтобы убедиться, что у вас правильный код;</li>
 <li>коды указаны в программе с помощью инструкции #define.</li>
 </ol></p>
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+        </p>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
@@ -897,7 +1331,7 @@ void loop() {
     <div class="page-inner">
       <div class="tab-page-content">
         <h2>Вторая практическая работа</h2>
-        <p><p><a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%d0%b1%d0%bb%d1%8e%d1%82%d1%83%d0%b7-%d0%bc%d0%b0%d1%88%d0%b8%d0%bd%d0%ba%d0%b0-%d0%b0%d1%80%d0%b4%d1%83%d0%b8%d0%bd%d0%be/#1">Блютуз машинка на Arduino</a></p>
+        <p>  <p><p><a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%d0%b1%d0%bb%d1%8e%d1%82%d1%83%d0%b7-%d0%bc%d0%b0%d1%88%d0%b8%d0%bd%d0%ba%d0%b0-%d0%b0%d1%80%d0%b4%d1%83%d0%b8%d0%bd%d0%be/#1">Блютуз машинка на Arduino</a></p>
 <p>Машинка на Ардуино с Bluetooth управлением от Android телефона &mdash; это очень простой, но интересный проект на Arduino UNO с использованием модуля Motor Shield. На этой странице вы узнаете какие потребуются компоненты для изготовления робота машинки на Ардуино своими руками, пошаговую инструкцию по сборке электрической схемы и сможете скачать все необходимые программы для Android и Arduino.</p>
 <p>Для этого проекта использовался модуль&nbsp;<a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%BC%D0%BE%D1%82%D0%BE%D1%80-%D1%88%D0%B8%D0%BB%D0%B4-%D0%BA-%D0%B0%D1%80%D0%B4%D1%83%D0%B8%D0%BD%D0%BE/">Motor Shield L293D</a>, два колеса с редукторами, плата Arduino UNO, блютуз модуль HC-05 и два светодиода для фар. Управление происходит дистанционно через Bluetooth сигнал от смартфона или планшета. После сборки модели и установки программ, вы сможете через приложение на смартфоне поворачивать машинкой, ездить вперед и назад, включать и выключать фары.</p>
 <p><strong>Для этого проекта потребуется:</strong></p>
@@ -990,8 +1424,20 @@ digitalWrite(2,LOW);
 <li>вращение моторов при подключении к аккумулятору будут отличаться;</li>
 <li>вы можете задавать свою скорость вращения моторами.</li>
 </ol>
-<p>После проверки работы машинки, установите приложение на смартфон или планшет. При первом подключении к Bluetooth модулю HC-05/06, потребуется сделать сопряжение с Андроид (затем сопряжение будет выполняться автоматически). Если у вас возникли сложности с подключением &mdash; прочитайте эту статью&nbsp;<a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B1%D0%BB%D1%8E%D1%82%D1%83%D0%B7-%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D1%8F-%D0%BA-%D0%B0%D1%80%D0%B4%D1%83%D0%B8%D0%BD%D0%BE/">Подключение блютуз модуля к Ардуино</a>&nbsp;или напишите вопрос в комментариях к этой записи.</p></p>
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+<p>После проверки работы машинки, установите приложение на смартфон или планшет. При первом подключении к Bluetooth модулю HC-05/06, потребуется сделать сопряжение с Андроид (затем сопряжение будет выполняться автоматически). Если у вас возникли сложности с подключением &mdash; прочитайте эту статью&nbsp;<a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%D0%BF%D0%BE%D0%B4%D0%BA%D0%BB%D1%8E%D1%87%D0%B5%D0%BD%D0%B8%D0%B5-%D0%B1%D0%BB%D1%8E%D1%82%D1%83%D0%B7-%D0%BC%D0%BE%D0%B4%D1%83%D0%BB%D1%8F-%D0%BA-%D0%B0%D1%80%D0%B4%D1%83%D0%B8%D0%BD%D0%BE/">Подключение блютуз модуля к Ардуино</a>&nbsp;или напишите вопрос в комментариях к этой записи.</p></p></p>
+        <p>
+          Подробности:
+          <a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%d0%b1%d0%bb%d1%8e%d1%82%d1%83%d0%b7-%d0%bc%d0%b0%d1%88%d0%b8%d0%bd%d0%ba%d0%b0-%d0%b0%d1%80%d0%b4%d1%83%d0%b8%d0%bd%d0%be/#1" target="_blank" rel="noopener noreferrer">
+            Блютуз‑машинка на Arduino
+          </a>
+        </p>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
@@ -1000,7 +1446,7 @@ digitalWrite(2,LOW);
     <div class="page-inner">
       <div class="tab-page-content">
         <h2>Третья практическая работа</h2>
-        <p><p>Сервопривод Ардуино.</p>
+        <p> <p><p>Сервопривод Ардуино.</p>
 <p>Рассмотрим на этом занятии устройство и принцип работы сервоприводов. Разберем два простых скетча для управления&nbsp;сервоприводом SG90 с помощью потенциометра на Ардуино. Также мы узнаем&nbsp;новые команды в языке программирования C++ &mdash;&nbsp;<strong>servo.write</strong><strong>,&nbsp;<strong>servo.read</strong>,&nbsp;<strong>servo.attach</strong></strong>&nbsp;и научимся подключать в скетчах&nbsp;библиотеку&nbsp;для управления сервоприводами и другими устройствами через Ардуино.</p>
 
 <p>Сервопривод (сервомотор) является важным элементом при конструировании различных роботов и механизмов. Это точный исполнитель, который имеет обратную связь, позволяющую точно управлять движениями механизмов. Другими словами, получая на входе значение управляющего сигнала, сервомотор стремится поддерживать это значение на выходе своего исполнительного элемента.</p>
@@ -1131,8 +1577,14 @@ void loop() {
 <ol>
 <li>максимальный угол для плавного поворота микросерво &mdash; 180 градусов;</li>
 <li>увеличивая задержку&nbsp;delay(20);, можно замедлить скорость поворота.</li>
-</ol></p>
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+</ol></p></p>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
@@ -1140,8 +1592,8 @@ void loop() {
   <section id="tab6-page" class="fullpage tab-page">
     <div class="page-inner">
       <div class="tab-page-content">
-        <h2>Четвертая практическая работа</h2>
-        <p><p>Подключения моторчика к Ардуино</p>
+        <h2>Четвёртая практическая работа</h2>
+        <p> <p><p>Подключения моторчика к Ардуино</p>
 <p>Подключение мотора постоянного тока к Ардуино (коллекторного двигателя) требуется при сборке машинки или катера на микроконтроллере Arduino. Рассмотрим различные варианты подключения двигателей постоянного тока: напрямую к плате, через биполярный транзистор, а также с использованием модуля L298N.</p>
 <p>Коллекторный моторчик может быть рассчитан на разное напряжения питания. Если двигатель работает от 3-5 Вольт, то можно моторчик подключать напрямую к плате Ардуино.</p>
 <p>Перед выбором способа управления двигателем от&nbsp;<a href="https://xn--18-6kcdusowgbt1a4b.xn--p1ai/%d0%b0%d1%80%d0%b4%d1%83%d0%b8%d0%bd%d0%be-%d1%83%d0%bd%d0%be/">Arduino Uno r3</a>, уточните на какое напряжение рассчитан ваш моторчик. Если питание требуется более 5 Вольт, то следует использовать транзистор или драйвер. Распиновка транзисторов может отличаться от приведенного примера (следует уточнить распиновку для своего типа). Драйвер L298N позволит не только включать мотор, но и изменять направление вращения.</p>
@@ -1174,18 +1626,24 @@ void loop() {
 <ol>
 <li>при необходимости можно подключить два мотора FA-130 к Ардуино;</li>
 <li>в зависимости от характеристик, двигатель подключается к 3,3 или 5 Вольтам.</li>
-</ol></p>
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+</ol></p></p>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- Админ-страница -->
+  <!-- АДМИНКА -->
   <section id="admin-page" class="fullpage tab-page">
     <div class="page-inner">
       <div class="tab-page-content">
         <h2>Админ‑панель</h2>
-        <p>Список всех пользователей, зарегистрированных в этом браузере:</p>
+        <p>Список пользователей, зарегистрированных в этом браузере:</p>
         <table>
           <thead>
             <tr>
@@ -1197,70 +1655,82 @@ void loop() {
           </thead>
           <tbody id="users-table-body"></tbody>
         </table>
-        <button class="btn-secondary" data-back>← Назад в меню</button>
+
+        <button class="btn-secondary" data-back>
+          <svg viewBox="0 0 24 24" fill="none">
+            <path d="M15 18 9 12l6-6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          Назад в меню
+        </button>
       </div>
     </div>
   </section>
 
   <script>
-    // ===== Работа с пользователями =====
+    const USERS_KEY = "users";
+    const CURRENT_USER_KEY = "currentUser";
+
     function loadUsers() {
-      const stored = localStorage.getItem('users');
+      const stored = localStorage.getItem(USERS_KEY);
       return stored ? JSON.parse(stored) : [];
     }
 
     function saveUsers(users) {
-      localStorage.setItem('users', JSON.stringify(users));
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
     }
 
     function setCurrentUser(user) {
       if (user) {
-        localStorage.setItem('currentUser', JSON.stringify(user));
+        localStorage.setItem(CURRENT_USER_KEY, JSON.stringify(user));
       } else {
-        localStorage.removeItem('currentUser');
+        localStorage.removeItem(CURRENT_USER_KEY);
       }
     }
 
     function getCurrentUser() {
-      const stored = localStorage.getItem('currentUser');
+      const stored = localStorage.getItem(CURRENT_USER_KEY);
       return stored ? JSON.parse(stored) : null;
     }
 
     function renderCurrentUserLabel() {
-      const label = document.getElementById('current-user-label');
+      const label = document.getElementById("current-user-label");
       const user = getCurrentUser();
-      if (label) label.textContent = user ? user.username : 'неизвестен';
+      if (label) {
+        label.textContent = user ? user.username : "неизвестен";
+      }
     }
 
     function updateAdminTabVisibility() {
       const current = getCurrentUser();
-      const adminBtn = document.getElementById('admin-tab-btn');
+      const adminBtn = document.getElementById("admin-tab-btn");
       if (!adminBtn) return;
 
-      if (current && current.username === 'sadygaap') {
-        adminBtn.style.display = 'inline-flex';
+      if (current && current.username === "sadygaap") {
+        adminBtn.style.display = "inline-flex";
       } else {
-        adminBtn.style.display = 'none';
-        const adminPage = document.getElementById('admin-page');
-        if (adminPage && adminPage.classList.contains('active')) {
-          showPage('tabs-page');
+        adminBtn.style.display = "none";
+        const adminPage = document.getElementById("admin-page");
+        if (adminPage && adminPage.classList.contains("active")) {
+          showPage("tabs-page");
         }
       }
     }
 
     function renderUsersTable() {
-      const tbody = document.getElementById('users-table-body');
+      const tbody = document.getElementById("users-table-body");
       const users = loadUsers();
-      tbody.innerHTML = '';
+      tbody.innerHTML = "";
 
-      if (users.length === 0) {
-        tbody.innerHTML =
-          '<tr><td colspan="4" style="text-align:center;padding:20px;color:#666;">Пока нет зарегистрированных пользователей</td></tr>';
+      if (!users.length) {
+        const tr = document.createElement("tr");
+        tr.innerHTML =
+          '<td colspan="4" style="text-align:center;padding:20px;color:#9ca3af;">Пока нет зарегистрированных пользователей</td>';
+        tbody.appendChild(tr);
         return;
       }
 
       users.forEach((user, index) => {
-        const row = document.createElement('tr');
+        const row = document.createElement("tr");
         row.innerHTML = `
           <td>${index + 1}</td>
           <td>${user.username}</td>
@@ -1271,97 +1741,103 @@ void loop() {
       });
     }
 
-    const allPages = document.querySelectorAll('.fullpage');
+    const allPages = document.querySelectorAll(".fullpage");
 
     function showPage(pageId) {
-      allPages.forEach(p => p.classList.remove('active'));
+      allPages.forEach((p) => p.classList.remove("active"));
       const page = document.getElementById(pageId);
-      if (page) page.classList.add('active');
+      if (page) page.classList.add("active");
 
-      if (pageId === 'admin-page') renderUsersTable();
+      if (pageId === "admin-page") {
+        renderUsersTable();
+      }
 
-      const tabButtons = document.querySelectorAll('.tab-btn');
-      tabButtons.forEach(btn => {
-        if (btn.dataset.tab === pageId) btn.classList.add('active');
-        else btn.classList.remove('active');
+      const tabButtons = document.querySelectorAll(".tab-btn");
+      tabButtons.forEach((btn) => {
+        if (btn.dataset.tab === pageId) btn.classList.add("active");
+        else btn.classList.remove("active");
       });
 
       renderCurrentUserLabel();
       updateAdminTabVisibility();
-      
-      // Обновляем подсветку синтаксиса при переключении страниц
+
       setTimeout(() => {
-        hljs.highlightAll();
-      }, 100);
+        if (window.hljs) hljs.highlightAll();
+      }, 50);
+
+      // чтобы при «Назад» сразу было видно окно вкладок
+      window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "auto"
+      });
     }
 
-    // ===== Переключение вкладок Вход / Регистрация =====
-    const authTabButtons = document.querySelectorAll('.auth-tab-btn');
-    const loginFormEl = document.getElementById('login-form');
-    const registerFormEl = document.getElementById('register-form');
+    const authTabButtons = document.querySelectorAll(".auth-tab-btn");
+    const loginFormEl = document.getElementById("login-form");
+    const registerFormEl = document.getElementById("register-form");
 
-    authTabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        authTabButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+    authTabButtons.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        authTabButtons.forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+
         const tab = btn.dataset.authTab;
-        if (tab === 'login') {
-          loginFormEl.style.display = 'flex';
-          registerFormEl.style.display = 'none';
+        if (tab === "login") {
+          loginFormEl.style.display = "flex";
+          registerFormEl.style.display = "none";
         } else {
-          loginFormEl.style.display = 'none';
-          registerFormEl.style.display = 'flex';
+          loginFormEl.style.display = "none";
+          registerFormEl.style.display = "flex";
         }
       });
     });
 
-    // ===== Вход =====
-    loginFormEl.addEventListener('submit', function(e) {
+    loginFormEl.addEventListener("submit", (e) => {
       e.preventDefault();
-      const username = document.getElementById('login-username').value.trim();
-      const password = document.getElementById('login-password').value;
+      const username = document.getElementById("login-username").value.trim();
+      const password = document.getElementById("login-password").value;
 
       if (!username || !password) {
-        alert('Введите логин и пароль.');
+        alert("Введите логин и пароль.");
         return;
       }
 
       const users = loadUsers();
-      const found = users.find(u => u.username === username && u.password === password);
+      const found = users.find((u) => u.username === username && u.password === password);
       if (!found) {
-        alert('Неверный логин или пароль.');
+        alert("Неверный логин или пароль.");
         return;
       }
 
       setCurrentUser({ username: found.username, email: found.email });
       loginFormEl.reset();
-      showPage('tabs-page');
+      showPage("tabs-page");
     });
 
-    // ===== Регистрация =====
-    registerFormEl.addEventListener('submit', function(e) {
+    registerFormEl.addEventListener("submit", (e) => {
       e.preventDefault();
-      const username = document.getElementById('reg-username').value.trim();
-      const email = document.getElementById('reg-email').value.trim();
-      const password = document.getElementById('reg-password').value;
-      const password2 = document.getElementById('reg-password2').value;
+      const username = document.getElementById("reg-username").value.trim();
+      const email = document.getElementById("reg-email").value.trim();
+      const password = document.getElementById("reg-password").value;
+      const password2 = document.getElementById("reg-password2").value;
 
       if (!username || !email || !password || !password2) {
-        alert('Заполните все поля.');
+        alert("Заполните все поля.");
         return;
       }
       if (password !== password2) {
-        alert('Пароли не совпадают.');
+        alert("Пароли не совпадают.");
         return;
       }
       if (password.length < 6) {
-        alert('Пароль минимум 6 символов.');
+        alert("Пароль минимум 6 символов.");
         return;
       }
 
       const users = loadUsers();
-      if (users.some(u => u.username === username)) {
-        alert('Пользователь с таким логином уже существует. Используйте вкладку Вход.');
+      if (users.some((u) => u.username === username)) {
+        alert("Пользователь с таким логином уже существует. Используйте вкладку Вход.");
         return;
       }
 
@@ -1369,61 +1845,54 @@ void loop() {
         username,
         email,
         password,
-        createdAt: new Date().toLocaleString('ru-RU')
+        createdAt: new Date().toLocaleString("ru-RU"),
       };
 
       users.push(newUser);
       saveUsers(users);
       setCurrentUser({ username: newUser.username, email: newUser.email });
       registerFormEl.reset();
-      showPage('tabs-page');
+      showPage("tabs-page");
     });
 
-    // ===== Вкладки кабинета =====
-    const tabButtons = document.querySelectorAll('.tab-btn');
+    const tabButtons = document.querySelectorAll(".tab-btn");
     tabButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
+      btn.addEventListener("click", () => {
         const targetId = btn.dataset.tab;
         const current = getCurrentUser();
-        if (targetId === 'admin-page' && (!current || current.username !== 'sadygaap')) {
-          alert('У вас нет доступа к админ‑панели.');
+
+        if (targetId === "admin-page" && (!current || current.username !== "sadygaap")) {
+          alert("У вас нет доступа к админ‑панели.");
           return;
         }
         showPage(targetId);
       });
     });
 
-    // Назад в меню
-    const backButtons = document.querySelectorAll('[data-back]');
+    const backButtons = document.querySelectorAll("[data-back]");
     backButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        showPage('tabs-page');
+      btn.addEventListener("click", () => {
+        showPage("tabs-page");
       });
     });
 
-    // Выход
-    const logoutBtn = document.getElementById('logout-btn');
-    logoutBtn.addEventListener('click', () => {
+    const logoutBtn = document.getElementById("logout-btn");
+    logoutBtn.addEventListener("click", () => {
       setCurrentUser(null);
-      showPage('auth-page');
+      showPage("auth-page");
       updateAdminTabVisibility();
     });
 
-    // Автовход
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
       const current = getCurrentUser();
       if (current) {
-        showPage('tabs-page');
+        showPage("tabs-page");
       } else {
-        showPage('auth-page');
+        showPage("auth-page");
       }
       renderUsersTable();
       updateAdminTabVisibility();
-    });
-
-    // Инициализация подсветки синтаксиса
-    document.addEventListener('DOMContentLoaded', () => {
-      hljs.highlightAll();
+      if (window.hljs) hljs.highlightAll();
     });
   </script>
 </body>
